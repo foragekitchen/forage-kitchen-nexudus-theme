@@ -35,7 +35,16 @@
         <div class="body-content" style="margin-bottom: 25px">
           <div class="media">
             <div class="media-object pull-left">
-              <img class="img-circle" style="max-width: 140px" src="{% Url Coworker, GetAvatar, Id: data.Local.Coworker.Id, h:140, w:140 %}" />
+                <img class="img-circle" style="max-width: 140px" src="{% Url Coworker, GetAvatar, Id: data.Local.Coworker.Id, h:140, w:140 %}" />
+                <p class="text-center" style="margin-top: 5px; max-width: 140px">
+                {% if data.Local.Coworker.CompanyName.size > 0 %}
+                <a href="{% Url Directory, Search, company: data.Local.Coworker.CompanyName %}">{{ data.Local.Coworker.CompanyName }}</a>
+                {% endif %}
+                {% if data.Local.Coworker.BusinessArea.size > 0 %}
+                <br/>
+                <small>{{ data.Local.Coworker.BusinessArea }}</small>
+                {% endif %}
+                </p>
             </div>
             <div class="media-body">
               <h4>{% T My profile %}</h4>
@@ -43,7 +52,7 @@
                 {% if data.Local.Coworker.ProfileSummary == null %}
                 {% T {0} hasn't published yet a profile summary. || data.Local.Coworker.FullName %}
                 {% endif %}
-                {{ data.Local.Coworker.ProfileSummary | StripHtml | NewlineToBr | MarkDown  }}
+                {{ data.Local.Coworker.ProfileSummary | StripHtml | MarkDown  }}
               </p>
               <div class="skills">
                 {% if data.Local.Coworker.ProfileTagsList.size == 0 %}
@@ -127,8 +136,24 @@
       <!-- SIDEBAR -->
       <aside id="sidebar-right" class="span3">
         
-         {% if data.Local.AllTags.size > 0 %}
-         <!-- WIDGET SKILLS -->
+        {% if data.Local.Coworker.Twitter.size > 0 %}
+        <!-- WIDGET SKILLS -->
+        <div class="widget">
+          <div class="widget-title">
+            <h3>{% T My Recent Tweets %}</h3>
+          </div>
+          <a class="twitter-timeline" href="https://twitter.com/{{ data.Local.Coworker.Twitter }}"
+          data-tweet-limit="3"
+          data-widget-id="430399305858285569"
+          data-chrome="noheader nofooter transparent noborders"
+          data-screen-name="{{ data.Local.Coworker.Twitter | Replace: '@','' }}" data-show-replies="false"
+          >Tweets by @{{ data.Local.Coworker.Twitter | Replace: '@',''  }}</a>
+        </div>
+        <!-- END WIDGET SKILLS -->
+        {% endif %}
+        
+        {% if data.Local.AllTags.size > 0 %}
+        <!-- WIDGET SKILLS -->
         <div class="widget widget-skills">
           <div class="widget-title">
             <h3>{% T Skills at {0} || data.Business.Name %}</h3>

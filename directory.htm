@@ -21,11 +21,11 @@
         <!-- FILTER -->
         <div class="filter text-center">
           <form class="form-search" method="GET" action="{% Url Directory, Search %}">
-            {% if data.Local.Query.size > 0 %}
+            {% if data.Local.Query.size > 0 or data.Local.Tag.size > 0 %}
             <a class="btn btn-link btn-small" href="{% Url Directory, Index %}">{% T Show all %}</a>
             {% endif %}
             <div class="input-append">
-              <input id="coworkers-search" value="{{ data.Local.Query }}" type="text" name="query" class="input-large search-query" autocomplete="off" placeholder="{% T Search... %}">
+              <input id="coworkers-search" value="{{ data.Local.Query }}{{ data.Local.Tag }}" type="text" name="query" class="input-large search-query" autocomplete="off" placeholder="{% T Search... %}">
               <button type="submit" class="btn">
                 <i class="icon-search"></i>
               </button>
@@ -33,7 +33,7 @@
           </form>
         </div>
         <!-- END FILTER -->
-        {% if data.Local.Coworkers.size == 0 %}
+        {% if data.Local.Coworkers.size == 0 and data.Local.Teams.size == 0 %}
         <div class="well well-large text-center">
           <h2>{% T No one has published a profile yet... :( %}</h2>
           <div class="media comment comment-form">
@@ -41,27 +41,58 @@
           </div>
         </div>
         {% endif %}
-        <div class="row">
-          {% for member in data.Local.Coworkers %}
+        <div>
+          {% if data.Local.Tag == null %}
+          {% DivRow team in data.Local.Teams cols:4 %}
+          <div class="team_block member_block span3 text-center">
+            <a href="{% Url Directory, Team, Id: team.Id, name: team.Name | Clean %}" class="user_avatar">
+              <img class="img-circle" style="height: 140px; width: 140px;" height="140" width="140" src="{% Url Team, GetAvatar, id: team.Id, h:140, w:140, mode: 'Pad' %}" alt="{{ team.Name | Capitalize }}" >          
+            </a>
+            <h4 class="subheader">{{ team.Name | Capitalize }}</h4>
+            
+            {% if team.ProfileWebsite.size > 0 %}
+            <a target="_blank" href="{{ team.ProfileWebsite }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-earth"></span></a>
+            {% else %}
+            <a href="{% Url Directory, Team, Id: team.Id, name: team.Name | Clean %}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-earth"></span></a>
+            {% endif %}
+            {% if team.Twitter.size > 0 %}
+            <a target="_blank" href="http://twitter.com/{{ team.Twitter }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-twitter"></span></a>
+            {% endif %}
+            {% if team.Linkedin.size > 0 %}
+            <a target="_blank" href="{{ team.Linkedin }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-linkedin"></span></a>
+            {% endif %}
+            {% if team.Facebook.size > 0 %}
+            <a target="_blank" href="{{ team.Facebook }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-facebook"></span></a>
+            {% endif %}
+            {% if team.Skype.size > 0 %}
+            <a href="callto://{{ team.Skype }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-skype"></span></a>
+            {% endif %}
+            
+          </div>
+          {% endDivRow %}
+          {% endif %}
+          
+          {% DivRow member in data.Local.Coworkers cols:4 %}
           <!-- member -->
           <div class="member_block span3 text-center {% if member.CheckedIn %}checkedin{% endif %}">
             <a href="{% Url Directory, Profile, Id: member.Id, name: member.FullName | Clean %}" class="user_avatar">
-              {% if member.HasAvatar %}
-              <img class="img-circle" height="140" width="140" src="{% Url Coworker, GetAvatar, id: member.Id, h:140, w:140 %}" alt="{{ member.FullName | Capitalize }}" >          
-              {% else %}
-              <img class="img-circle" height="140" width="140" src="/content/themes/public/clean/images/comment-avatar.jpg" alt="{{ member.FullName | Capitalize }}" >
-              {% endif %}
+              <img class="img-circle" style="height: 140px; width: 140px;" height="140" width="140" src="{% Url Coworker, GetAvatar, id: member.Id, h:140, w:140 %}" alt="{{ member.FullName | Capitalize }}" >          
             </a>
             {% if member.CheckedIn %}
             <br/>
             <span class="label label-success">{% T checked in %}</span>
             {% endif %}
             <h4 class="subheader">{{ member.FullName | Capitalize }}</h4>
-            
+            {% if member.CompanyName != null %}
+            <p>
+              <a title="{{ member.CompanyName }}" href="/en/directory/search?company={{ member.CompanyName }}">{{ member.CompanyName | TruncateWords: 3 }}</a>
+              &nbsp;
+            </p>
+            {% endif %}
             {% if member.ProfileWebsite.size > 0 %}
-              <a target="_blank" href="{{ member.ProfileWebsite }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-earth"></span></a>
+            <a target="_blank" href="{{ member.ProfileWebsite }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-earth"></span></a>
             {% else %}
-              <a href="{% Url Directory, Profile, Id: member.Id, name: member.FullName | Clean %}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-earth"></span></a>
+            <a href="{% Url Directory, Profile, Id: member.Id, name: member.FullName | Clean %}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-earth"></span></a>
             {% endif %}
             {% if member.Twitter.size > 0 %}
             <a target="_blank" href="http://twitter.com/{{ member.Twitter }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-twitter"></span></a>
@@ -77,7 +108,7 @@
             {% endif %}
           </div>
           <!-- END member -->
-          {% endfor %}
+          {% endDivRow %}
         </div>
         
       </section>

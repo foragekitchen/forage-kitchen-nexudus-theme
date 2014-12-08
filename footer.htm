@@ -21,10 +21,14 @@
       <!-- END BLOCK -->
       
       <!-- BLOCK -->
-      <div class="block span4">
+            <div class="block span4">
         <h3>{% T Recent Tweets %}</h3>
         {% if data.Setting_Social_Twitter != "" %}
-        <a class="twitter-timeline" data-tweet-limit="1" data-chrome="noheader nofooter noborders" href="https://twitter.com/twitterapi" data-widget-id="{% Setting Social.Twitter %}"></a>
+        <a class="twitter-timeline" href="https://twitter.com/{{ data.Setting_Social_Twitter }}"
+        data-tweet-limit="1"
+        data-widget-id="430399305858285569"
+        data-screen-name="{{ data.Setting_Social_Twitter }}" data-show-replies="false"
+        >Tweets by @{{ data.Setting_Social_Twitter }}</a>
         {% else %}
         <div class="well no-content text-center">
           <span aria-hidden="true" class="icon i-48 icon-twitter-2"></span>

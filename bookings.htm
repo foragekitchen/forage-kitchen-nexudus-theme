@@ -10,28 +10,29 @@
     </ul>
     <!-- END BREADCRUMB -->
     <div class="row">      
-      <h2 class="page-title span12">
-        {% T Events and bookings calendar %}
-        <select id="resource-filter" class="pull-right hidden-phone" style="margin-top: 5px">
-          <option value="">{% T Show all resources %}</option>
-          {% for resource in data.Resources %}
-          <option {%if data.Local.Resource.Id == resource.Id %}selected="selected"{%endif%} value="{{ resource.Id }}">{{ resource.Name }}</option>
-          {% endfor %}
-        </select>
-      </h2>
+        <h2 class="page-title span12">
+            {% if data.Local.Resource == null %}
+            {% T Events and bookings calendar %}
+            {% else %}
+            {{ data.Local.Resource.Name }}
+            {% endif %}
+            <select id="resource-filter" class="pull-right hidden-phone" style="margin-top: 5px">
+                <option value="">{% T Show all resources %}</option>
+                {% for resource in data.Resources %}
+                <option {%if data.Local.Resource.Id == resource.Id %}selected="selected"{%endif%} value="{{ resource.Id }}">{{ resource.Name }}</option>
+                {% endfor %}
+            </select>
+        </h2>
       
       <!-- CONTENT -->
       <section id="content" class="span12">
-        {% if data.Coworker != null %}
-        <div class="alert alert-info fade in">
-          <ul style="margin-bottom:0">
-            <li>{% T Click in the calendar to request a booking. %}</li>
-            <li>{% T Times are displayed in the following timezone: {0}. || data.Coworker.SimpleTimeZone.Name %}</li>
-          </ul>
+        {% if data.Coworker != null or data.Setting_Bookings_EnableGuestBookings %}
+        <div class="alert alert-info fade in text-center">
+            <b>{% T Click in the calendar to request a booking. %}</b>
         </div>
         {% else %}
         <p>
-          <a class="btn btn-orange" href="{% Url Login, Index, lang: data.Language %}">{% T Login to make a booking %}</a>
+          <a class="btn btn-orange" href="{% Url Login, Index, lang: data.Language %}&returnUrl={{ data.URL }}">{% T Login to make a booking %}</a>
         </p>
         {% endif %}
         <div id="calendar" class="well"></div>
@@ -40,10 +41,10 @@
           <span class="label" style="background: black">{% T Your bookings %}</span>
           <span class="label" style="background: #a1a1a1">{% T Events %}</span>
           <span class="label" style="background: lightgray">{% T Booked Resource %}</span>
-          {% if data.Coworker != null %}
-          <a onclick="createBooking()" class="btn btn-orange pull-right">{% T Make a booking %}</a>
+          {% if data.Coworker != null or data.Setting_Bookings_EnableGuestBookings %}
+          <a onclick="createBooking(new Date())" class="btn btn-orange pull-right">{% T Make a booking %}</a>
           {% else %}
-          <a class="btn btn-orange pull-right" href="{% Url Login, Index, lang: data.Language %}">{% T Login to make a booking %}</a>
+          <a class="btn btn-orange pull-right" href="{% Url Login, Index, lang: data.Language %}&returnUrl=/{{ data.Language }}/bookings">{% T Login to make a booking %}</a>
           {% endif %}
         </div>
         
@@ -112,40 +113,21 @@
 
 <script>
     $('#modal_unpaidbooking').modal();    
+    $('#Booking_Resource').prepend('<option></option>');
   
     var vm;
     var fc = $('#calendar').fullCalendar({
-        allDayText: '{% T All day %}',
-        axisFormat: '{% T AxisFormat %}',
-        titleFormat: {
-            month: '{% T MonthFormat %}',
-            week: "{% T WeekFormat %}",
-            day: '{% T DayFormat %}'
-        },
-        columnFormat: {
-            month: '{% T MontShort %}',
-            week: "{% T WeekShort %}",
-            day: '{% T DayShort %}'
-        },
-        timeFormat: {
-            '': '{% T TimeFormat %}',
-            agenda: '{% T AgendaFormat %}'
-        },
+        lang: '{{ data.Language }}',
+        allDaySlot: false,
         firstDay: 1,
-        monthNames: ['{% T January %}', '{% T February %}', '{% T March %}', '{% T April %}', '{% T May %}', '{% T June %}', '{% T July %}', '{% T August %}', '{% T September %}', '{% T October %}', '{% T November %}', '{% T December %}'],
-        monthNamesShort: ['{% T Jan %}', '{% T Feb %}', '{% T Mar %}', '{% T Apr %}', '{% T May %}', '{% T Jun %}', '{% T Jul %}', '{% T Aug %}', '{% T Sep %}', '{% T Oct %}', '{% T Nov %}', '{% T Dec %}'],
-        dayNames: ['{% T Sunday %}', '{% T Monday %}', '{% T Tuesday %}', '{% T Wednesday %}', '{% T Thursday %}', '{% T Friday %}', '{% T Saturday %}'],
-        dayNamesShort: ['{% T Sun %}', '{% T Mon %}', '{% T Tue %}', '{% T Wed %}', '{% T Thu %}', '{% T Fri %}', '{% T Sat %}'],
-        buttonText: {
-            prev: '&nbsp;&#9668;&nbsp;',
-            next: '&nbsp;&#9658;&nbsp;',
-            prevYear: '&nbsp;&lt;&lt;&nbsp;',
-            nextYear: '&nbsp;&gt;&gt;&nbsp;',
-            today: '{% T today %}',
-            month: '{% T month %}',
-            week: '{% T week %}',
-            day: '{% T day %}'
-        },
+        resources: [
+          {% for resource in data.Resources %}
+          {'id':{{ resource.Id }},'name':'{{ resource.Name }}'},
+          {% endfor %}
+          
+          ],
+        
+        
         eventClick: function(calEvent, jsEvent, view) {
             if(calEvent.url)
                 window.location = url;
@@ -159,50 +141,58 @@
                 return false;
             }
         },
-        dayClick: function(date, allDay, jsEvent, view) { 
+        dayClick: function(date, evData, jsEvent) { 
+            if(evData.data && evData.data.id)
+                $('#Booking_Resource').val(evData.data.id);
+            else
+                $('#Booking_Resource').val(null);
             {% if data.Coworker != null %}
-            createBooking(date);
+            createBooking(date.local().toDate());
+            {% elseif data.Setting_Bookings_EnableGuestBookings %}
+            createBooking(date.local().toDate());
             {% else %}
             showWarningMessage('{% T Login to make a booking %}');
             {% endif %}
         },
-        defaultView: $(window).width() < 768 ? 'basicDay' : 'month',
+        defaultView: $(window).width() < 768 ? 'basicDay' : '{% if data.Local.Resource.Id > 0 %}agendaDay{% else %}resourceDay{% endif %}',
         editable: true,
         header: {
             left:   $(window).width() >= 768 ? 'title' : null,
-            center: $(window).width() < 768 ? 'basicDay' : 'month, agendaWeek',
+            center: $(window).width() < 768 ? 'basicDay' : 'month, agendaWeek, {% if data.Local.Resource.Id > 0 %}agendaDay{% else %}resourceDay{% endif %}',
             right:  'today prev,next'
         },
         eventSources: [
-          {
-              events: [
-                {% for event in data.Local.Bookings %}
-                {
-                    id: {{ event.Id }},
-                    title  : '{{ event.Resource.Name | Replace: "'", "\'" }}',
-                    startDate: '{{event.FromTime | Date: 'd'}}',
-                  endDate: '{{event.ToTime | Date: 'd'}}',
-              startTime: '{{event.FromTime | Date: 't'}}',
-            endTime: '{{event.ToTime | Date: 't'}}',
-        start  : '{{event.FromTime | Date: 'yyyy' }}-{{ event.FromTime | Date: 'MM' }}-{{ event.FromTime | Date: 'dd' }}T{{ event.FromTime | Date: 'HH' }}:{{ event.FromTime | Date: 'mm' }}',
+        {
+        events: [
+        {% for event in data.Local.Bookings %}
+        {
+        id: {{ event.Id }},
+        resources: {{ event.Resource.Id }},
+        title  : '{{ event.Resource.Name | Replace: "'", "\'" }}',
+        startDate: '{{event.FromTime | Date: 'd'}}',
+        endDate: '{{event.ToTime | Date: 'd'}}',
+        startTime: '{{event.FromTime | Date: 't'}}',
+        endTime: '{{event.ToTime | Date: 't'}}',
+        start  : '{{event.FromTime | Date: 'yyyy' }}-{{ event.FromTime | Date: 'MM' }}-{{ event.FromTime | Date: 'dd' }}T{{ event.FromTime | Date: 'HH' }}:{{ event.FromTime | Date: 'mm' }}Z',
         end  : '{{ event.ToTime | Date: 'yyyy' }}-{{ event.ToTime  | Date: 'MM' }}-{{ event.ToTime  | Date: 'dd' }}T{{ event.ToTime  | Date: 'HH' }}:{{ event.ToTime  | Date: 'mm' }}Z',
         allDay : false,
-    editable: false,
-    ignoreTimezone: true,
-    color: 'black'
-    },
+        editable: false,
+        ignoreTimezone: true,
+        color: getColurFromName('{{ event.Resource.Name }}')
+        },
     {% endfor %}  
     {% if data.Local.ShowAll and data.Local.ShowAllBookings %}
     {% for event in data.Local.AllBookings %}
     {
-    private: true,
+        private: true,
+        resources: {{ event.Resource.Id }},
         title  : '{{ event.Resource.Name | Replace: "'", "\'" }}',
         start  : '{{ event.FromTime | Date: 'yyyy' }}-{{ event.FromTime | Date: 'MM' }}-{{ event.FromTime | Date: 'dd' }}T{{ event.FromTime | Date: 'HH' }}:{{ event.FromTime | Date: 'mm' }}Z',
         end  : '{{ event.ToTime | Date: 'yyyy' }}-{{ event.ToTime  | Date: 'MM' }}-{{ event.ToTime  | Date: 'dd' }}T{{ event.ToTime  | Date: 'HH' }}:{{ event.ToTime  | Date: 'mm' }}Z',
         allDay : false,
         editable: false,
         ignoreTimezone: true,
-        color: 'lightgray'
+        color: getColurFromName('{{ event.Resource.Name }}')
     },
     {% endfor %}
     {% if data.Local.ShowAll %}
@@ -307,8 +297,9 @@
          
         var loadProducts = function(){
             var bid = $('#booking_id').val();
-            if(bid && bid > 0)
-                return $.post('/en/bookings/GetResourceProducts?bookingId=' + bid + '&resourceId=' + $('#Booking_Resource').val());
+            var rid = $('#Booking_Resource').val();
+            if(bid && bid > 0 && rid && rid > 0)
+                return $.post('/en/bookings/GetResourceProducts?bookingId=' + bid + '&resourceId=' + rid);
             else
                 return $.post('/en/bookings/GetResourceProducts?resourceId=' + $('#Booking_Resource').val());
         }
@@ -336,7 +327,42 @@
          .then(mapData)
          .then(applyBindings)
     });
-       
+              
+    function getColurFromName(str){
+        // Generate a Hash for the String
+        var hash = function(word) {
+            var h = 0;
+            for (var i = 0; i < word.length; i++) {
+                h = word.charCodeAt(i) + ((h << 5) - h);
+            }
+            return h;
+        };
+               
+        // Change the darkness or lightness
+        var shade = function(color, prc) {
+            var num = parseInt(color, 16),
+                amt = Math.round(2.55 * prc),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00FF) + amt,
+                B = (num & 0x0000FF) + amt;
+            return (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                    (B < 255 ? B < 1 ? 0 : B : 255))
+              .toString(16)
+              .slice(1);
+                 
+        };
+        // Convert init to an RGBA
+        var int_to_rgba = function(i) {
+            var color = ((i >> 24) & 0xFF).toString(16) +
+                ((i >> 16) & 0xFF).toString(16) +
+                ((i >> 8) & 0xFF).toString(16) +
+                (i & 0xFF).toString(16);
+            return color;
+        };
+               
+        return '#' + shade(int_to_rgba(hash(str)), -10);
+    }
        
 </script>
 {% endblock %}

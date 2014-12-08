@@ -21,7 +21,7 @@
       <nav class="nav-collapse collapse navbar-responsive-collapse">
         <ul class="nav nav-pills pull-right">
           <li class="{%if data.Controller == 'publichome'%}active{%endif%}"><a href="{% Url PublicHome, Index %}">{% T Home %}</a></li>
-          <li class="dropdown {%if data.Controller == 'about' or data.Controller == 'support' or data.Controller == 'bookings' or data.Controller == 'directory'%}active{%endif%}">
+          <li class="dropdown {%if data.Controller == 'about' or data.Controller == 'conversations' or data.Controller == 'support' or data.Controller == 'bookings' or data.Controller == 'directory'%}active{%endif%}">
             <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">{{ data.Business.Name }} <b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu">
               <li class="{%if data.Controller == 'about'%}active{%endif%}"><a role="menuitem" tabindex="-1"  href="{% Url About, Index %}">{% T About us %}</a></li>
@@ -62,7 +62,7 @@
           {% if data.Setting_PublicWebSite_MyAccount %}
           {% if data.UserIsLoggedIn %}
           <li class="dropdown {%if data.Controller == 'profile' or data.Controller == 'invoices' or data.Controller == 'allowances' or data.Controller == 'store' %}active{%endif%}">
-            <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">{% T My account %} <b class="caret"></b></a>
+            <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">{{ data.Coworker.FullName }} <b class="caret"></b></a>
             <ul class="dropdown-menu" role="menu">
               <li class="{%if data.Controller == 'profile' and data.Action == 'index'%}active{%endif%}"><a role="menuitem" tabindex="-1" href="{% Url Profile, Index %}">{% T My profile %}</a></li>
               <li class="{%if data.Controller == 'invoices'%}active{%endif%}"><a role="menuitem" tabindex="-1" href="{% Url Invoices, Index %}">{% T Payments %}</a></li>

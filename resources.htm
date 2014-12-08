@@ -34,7 +34,7 @@
                 <p>
                   <a href="{% Url PublicResources, Details, id: resource.Id, name: resource.Name | Clean %}">{% T View more details  %}</a>
                   |
-                  <a href="javascript: window.prompt('{{ resource.Name }}. Calendar URL:','http://{{ data.Domain }}{% Url Feeds, ResourceBookings, guid: resource.UniqueId %}'); return false;">{% T Calendar Feed %}</a>
+                  <a href="javascript: window.prompt('{{ resource.Name }}. Calendar URL:','http://{{ data.Domain }}{% Url Feeds, ResourceBookings, guid: resource.UniqueId %}');">{% T Calendar Feed %}</a>
                 </p>
               </div>
             </div>
@@ -98,8 +98,8 @@
           </div>
           <div class="row">
             <div class="span9">
-              <div class="well text-center">
-                {% if data.Coworker != null %}    
+              <div class="alert alert-info fade in text-center">
+                {% if data.Coworker != null or data.Setting_Bookings_EnableGuestBookings %}
                 <a href="#" onclick="$('#Booking_Resource').val({{ resource.Id }});createBooking(new Date());return false;" class="btn btn-orange">{% T Make a booking %}</a>
                 {% else %}
                 <a href="{% Url Login, Index, lang: data.Language %}&returnUrl={% Url PublicResources, Details, id: resource.Id, name: resource.Name | Clean %}" class="btn btn-orange">{% T Login to make a booking %}</a>
@@ -195,7 +195,7 @@
                 url = '{% Url Bookings, NewBookingJson %}';
 
             var data = getBookingData();
-            postAndClose(url, data, function () { location.reload(true); });
+            postAndClose(url, data);
             event.preventDefault();
         });
 
@@ -203,7 +203,7 @@
             if (confirm('{% T Cancel this booking? %}')) {
                 var url = '{% Url Bookings, DeleteJson %}';
                 var id = $('#booking_id').val();
-                postAndClose(url, { id: id }, function () { location.reload(true); });
+                postAndClose(url, { id: id });
             }
             return false;
         });

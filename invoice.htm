@@ -19,38 +19,51 @@
           {% endif %}
           <div class="vcard" id="company-address">
             <div class="fn org">
-              <strong>{{ data.Local.Invoice.Business.Name }}</strong>
+              <strong>{{ data.Setting_Billing_BillToName }}</strong>
             </div>
             <div class="adr">
               <div class="street-address">
                 {{ data.Local.TaxIDCode }}
               </div>
               <div class="street-address">
-                {{ data.Local.BillToAddress | NewlineToBr }}
+                {{ data.Local.BillToAddress | Replace: 'Not Available', '' | NewlineToBr }}
               </div>
               <div class="locality">
-                {{ data.Local.BillToCity }}
+                {{ data.Local.BillToCity | Replace: 'Not Available', '' }}
               </div>
               <div id="company-postcode">
-                <span class="postal-code">{{ data.Local.BillToPostCode }}</span>
+                <span class="postal-code">{{ data.Local.BillToPostCode | Replace: 'Not Available', '' }}</span>
               </div>
             </div>
           </div>
       </div>
-      <div id="invoice-info">
+      <div id="invoice-info" style="width: 400px">
         <h2>
-          Invoice
+          {% if data.Local.Invoice.TotalAmount > 0 % %}
+          {% T Invoice %}
+          {% else %}
+          {% T Credit Note %}
+          {% endif %}
           <strong>{{ data.Local.Invoice.InvoiceNumber }}</strong></h2>
-        <h3>
-          {{ data.Local.Invoice.CreatedOn | Date: 'D' }}</h3>
+          <p>{{ data.Local.Invoice.CreatedOn | Date: 'D' }}</p>
+          <br/>
+        {% if data.Local.Invoice.PurchaseOrder.size > 0%}
+        <strong>{% T Purhcase Order %}</strong>: {{ data.Local.Invoice.PurchaseOrder }}
+        {% endif %}
+        {% if data.Local.Invoice.InvoiceFromDate %}
+        <strong>{% T Period %}</strong>:
+        {{ data.Local.Invoice.InvoiceFromDate | Date: 'M' }}
+        -
+        {{ data.Local.Invoice.InvoiceToDate | Date: 'M' }}
+        {% endif %}
         <p id="invoice-total">
-          {{ data.Local.Invoice.TotalAmount | FormatDecimal: '0.00' }}</p>
+        </p>
         <p id="payment-due">
           {% if data.Local.Invoice.Paid == false %}
-          Due:
+          <strong>{% T Due %}</strong>:
           {{ data.Local.Invoice.DueDate | Date: 'D' }}
           {% else %}
-          Paid
+          <strong>{% T Paid %}</strong>:
           {{ data.Local.Invoice.PaidOn | Date: 'D' }}
           {% endif %}
         </p>
@@ -123,29 +136,28 @@
             </td>
             <td>&nbsp;</td>
           </tr>
-          {% if data.Local.Invoice.Paid  %}
+          {% for payment in data.Local.Invoice.Payments %}
           <tr id="settlement_tr">
             <td colspan="3" class="item_r">
               {% T Paid On %}
-              {{ data.Local.Invoice.PaidOn | Date: 'D' }}
+              {{ payment.PaymentDate | Date: 'D' }}
             </td>
             <td class="item_r">
-              {{ data.Local.Invoice.TotalAmount | FormatDecimal: '0.00' }}
+              {{ payment.Credit | FormatDecimal: '0.00' }}
             </td>
             <td>&nbsp;</td>
           </tr>
-          {% else %}
+          {% endfor %}
           <tr id="due_tr">
             <td colspan="3" class="total">
-              Due
+              {% T Due %}
               (<span class="currency">{{ data.Local.Invoice.Currency.Code  }}</span>)
             </td>
             <td class="total">
-              {{ data.Local.Invoice.TotalAmount | FormatDecimal: '0.00' }}
+              {{ data.Local.Invoice.TransactionTotalAmount | FormatDecimal: '0.00' }}
             </td>
             <td>&nbsp;</td>
           </tr>
-          {% endif %}
         </tfoot>
         <tbody id="invoice_items">
           {% for line in data.Local.Invoice.Lines %}

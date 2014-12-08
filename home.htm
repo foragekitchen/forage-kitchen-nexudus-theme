@@ -29,10 +29,21 @@
         
         <!-- carousel-content -->
         <div class="carousel-inner">
-          {% assign loop = 0 %}
-          {% for image in data.Local.Gallery %}
+            {% assign loop = 0 %}
+            
+          {% for post in data.Local.BannerBlogPosts %}
           <div class="item {% if loop == 0 %}active{% endif %}">
-			<img src="{% Url Content, Images, name: image.Name, w: 1170, h: 450, quality: 100 %}" alt="">
+            <a href="{% Url Blog, Read, Id: post.Id, title: post.Title | Clean %}">
+              <img src="{% Url Blog, GetImage, id: post.Id, w: 1170, h: 450%}" alt="{{ post.Name}}">
+            </a>
+            <div class="carousel-caption">
+              <h4>{{ post.Title }}</h4>
+              <p>
+                {{ post.SummaryText | StripHtml | MarkDown | TruncateWords words: 15 }}
+                | <a href="{% Url Blog, Read, Id: post.Id, title: post.Title | Clean %}">{% T Read more %}</a>  
+              </p>
+              
+            </div>
           </div>
           {% assign loop = loop | Plus: 1 %}
           {% endfor %}
@@ -53,22 +64,13 @@
           {% assign loop = loop | Plus: 1 %}
           {% endfor %}
           
-          {% for post in data.Local.BannerBlogPosts %}
+          {% for image in data.Local.Gallery %}
           <div class="item {% if loop == 0 %}active{% endif %}">
-            <a href="{% Url Blog, Read, Id: post.Id, title: post.Title | Clean %}">
-              <img src="{% Url Blog, GetImage, id: post.Id, w: 1170, h: 450%}" alt="{{ post.Name}}">
-            </a>
-            <div class="carousel-caption">
-              <h4>{{ post.Title }}</h4>
-              <p>
-                {{ post.SummaryText | StripHtml | MarkDown | TruncateWords words: 15 }}
-                | <a href="{% Url Blog, Read, Id: post.Id, title: post.Title | Clean %}">{% T Read more %}</a>  
-              </p>
-              
-            </div>
+			<img src="{% Url Content, Images, name: image.Name, w: 1170, h: 450, quality: 100 %}" alt="">
           </div>
           {% assign loop = loop | Plus: 1 %}
           {% endfor %}
+
         </div>
         <!-- END carousel-content -->
         
@@ -420,7 +422,7 @@
     <div class="container">
       <h3>{% T People at {0} || data.Business.Name %}</h3>
       <div class="row">
-        {% DivRow member in data.Local.Members cols:4 %}
+        {% DivRow member in data.Local.Members cols:4, limit: 8 %}
         <!-- member -->
         <div class="member_block span3 text-center">
           <a href="{% Url Directory, Profile, Id: member.Id, name: member.FullName | Clean %}" class="user_avatar">

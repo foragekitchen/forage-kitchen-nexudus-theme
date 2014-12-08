@@ -62,7 +62,7 @@
                   <th class="span9">{% T Included in your Price Plan %}</th>
                   <th class="span2">{% T Qty. %}</th>
                   <th class="span1">
-                    <p class="text-right">{% T Remaining %}</p>
+                    <span class="pull-right">{% T Remaining %}</span>
                    </th>
                 </tr>
               </thead>
@@ -73,10 +73,17 @@
                   <td>
                     {{ tp.TimePass.Name }}<br/><small>{{ tp.TimePass.Description }}</small>
                   </td>
-                  <td>{{ tp.PassesIncluded }} / {% T tp.PassRenewalTime %}</td>
+                  <td>{{ tp.PassesIncluded }} {% T every %} {% T tp.PassRenewalTime %}</td>
                   <td>
                     <p class="text-right">
+                      
+                      {% if tp.RemainingHours > 0 %}
+                      {{ tp.RemainingHours }} {% T hours %}
+                      {% elseif tp.RemainingMinutes > 0 %}
+                      {{ tp.RemainingMinutes }} {% T minutes %}
+                      {% else %}
                       {{ tp.Remaining }} 
+                      {% endif %}
                     </p>
                   </td>
                 </tr>
@@ -87,7 +94,7 @@
                   <td>
                     {{ xs.ExtraService.Name }}<br/><small>{{ xs.ExtraService.Description }}</small>
                   </td>
-                  <td>{{ xs.UsesIncluded }} / {% T xs.ServiceRenewalTime %}</td>
+                  <td>{{ xs.UsesIncluded }} {% T every %} {% T xs.ServiceRenewalTime %}</td>
                   <td>
                     <p class="text-right">
                     {{ xs.Remaining }} 
@@ -150,7 +157,13 @@
                   </td>
                   <td>
                     <p class="text-right">
-                    	{{ p.Remaining }}
+                      {% if p.RemainingHours > 0 %}
+                      {{ p.RemainingHours }} {% T hours %}
+                      {% elseif p.RemainingUses > 0 %}
+                      {{ p.RemainingUses }} {% T minutes %}
+                      {% else %}
+                      {{ p.Remaining }} 
+                      {% endif %}
                     </p>
                   </td>
                 </tr>
@@ -173,7 +186,7 @@
                 {% if data.Coworker.TotalRemainingBookingCredit > 0 %}
                 <tr>
                   <td>
-                    {{ data.Coworker.TotalRemainingBookingCredit | FormatDecimal format: '0.00' }} {% T Booking Credit %}
+                    {{ data.Coworker.TotalTotalBookingCredit | FormatDecimal format: '0.00' }} {% T Booking Credit %}
                   </td>
                   <td>
                     <p class="text-right">

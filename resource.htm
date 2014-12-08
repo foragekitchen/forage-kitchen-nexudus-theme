@@ -82,14 +82,13 @@
                     <span data-toggle="popover" data-placement="top" data-content="{% T Natural light %}" data-trigger="hover" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-brightness-medium"></span></span>
                     {% endif %}
                 </p>
-                <p>
-                    {% if data.Coworker != null %}    
-                    <a href="#" onclick="$('#Booking_Resource').val({{ data.Local.Resource.Id }});createBooking(new Date());return false;" class="btn btn-orange">{% T Make a booking %}</a>
-                    {% else %}
-                    <a href="{% Url Login, Index, lang: data.Language %}&returnUrl={% Url PublicResources, Details, id: data.Local.Resource.Id, name: data.Local.Resource.Name | Clean %}" class="btn btn-orange">{% T Login to make a booking %}</a>
-                    {% endif %}
-
-                </p>
+              <div class="alert alert-info fade in text-center">
+                {% if data.Coworker != null or data.Setting_Bookings_EnableGuestBookings %}
+                <a href="#" onclick="$('#Booking_Resource').val({{ resource.Id }});createBooking(new Date());return false;" class="btn btn-orange">{% T Make a booking %}</a>
+                {% else %}
+                <a href="{% Url Login, Index, lang: data.Language %}&returnUrl={% Url PublicResources, Details, id: resource.Id, name: resource.Name | Clean %}" class="btn btn-orange">{% T Login to make a booking %}</a>
+                {% endif %}
+              </div>
             </div>
             
           <a class="pull-right btn btn-link" href="javascript: window.prompt('{{ data.Local.Resource.Name | Replace: "'","\'" }}. Calendar URL:','http://{{ data.Domain }}{% Url Feeds, ResourceBookings, guid: data.Local.Resource.UniqueId %}'); return false;">
@@ -106,17 +105,6 @@
       
       <!-- SIDEBAR -->
       <aside id="sidebar-right" class="span3">
-        <!-- WIDGET FLICKR -->
-        <div class="widget widget-flickr">
-          <div class="widget-title">
-            <h3>{% T Flickr Feed %}</h3>
-          </div>
-          <div class="widget-body">
-            <ul>
-            </ul>
-          </div>
-        </div>
-        <!-- END WIDGET FLICKR -->
         {% if data.Setting_Social_Flickr != "" %}
         <!-- WIDGET FLICKR -->
         <div class="widget widget-flickr">
@@ -193,7 +181,7 @@
                 url = '{% Url Bookings, NewBookingJson %}';
 
             var data = getBookingData();
-            postAndClose(url, data, function () { location.reload(true); });
+            postAndClose(url, data);
             event.preventDefault();
         });
 
@@ -201,7 +189,7 @@
             if (confirm('{% T Cancel this booking? %}')) {
                 var url = '{% Url Bookings, DeleteJson %}';
                 var id = $('#booking_id').val();
-                postAndClose(url, { id: id }, function () { location.reload(true); });
+                postAndClose(url, { id: id });
             }
             return false;
         });
