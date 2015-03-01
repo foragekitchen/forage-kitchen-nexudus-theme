@@ -41,7 +41,6 @@
     <script type="text/javascript" src="/content/themes/public/default/libs/full-calendar-resources/gcal.js"></script>
     <script type="text/javascript" src="/content/themes/public/default/js/app_v2.js"></script>
     <script type="text/javascript" src="/content/themes/public/default/libs/jquery.h5validate.js"></script>
-    <script type="text/javascript" src="/content/themes/public/default/libs/jquery.h5validate.js"></script>
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script type="text/javascript" src="/content/themes/public/default/js/chosen/chosen.jquery.min.js"></script>
     <script type="text/javascript" src="/content/themes/public/default/js/datetimepicker/js/bootstrap-datetimepicker.js"></script>

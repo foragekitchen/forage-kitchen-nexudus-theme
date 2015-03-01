@@ -272,6 +272,18 @@
                       - <i>{% T Expires on {0} || expireDate %} </i>
                       {% endif %}
                     </td>
+<td>
+                    <p class="text-right">
+                      
+                      {% if timepass.RemainingHours > 0 %}
+                      {{ timepass.RemainingHours }} {% T hours %}
+                      {% elseif timepass.RemainingMinutes > 0 %}
+                      {{ timepass.RemainingMinutes }} {% T minutes %}
+                      {% else %}
+                      {{ timepass.Remaining }} 
+                      {% endif %}
+                    </p>
+                  </td>
                   </tr>
                   {% endif %}
                   {% endfor %}

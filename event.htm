@@ -50,15 +50,68 @@
                 <i class="icon-ticket"></i>
                 {% T Buy Tickets %}</a>
               {% endif %}
-              <a class="btn btn-grey" href="{% Url Events, ICal, Id: data.Local.Event.Id, title: ev.Name | Clean %}">
-                <i class="icon-calendar"></i> 
-                {% T Add to Calendar %}</a>
+              <a href="{% Url Events, ICal, Id: data.Local.Event.Id, title: ev.Name | Clean %}" title="{% T Add to Calendar %}" class="btn btn-grey addthisevent">
+                {% T Add to Calendar %}
+                <span class="_start">{{ data.Local.Event.StartDate | Date: 'MM-dd-yyyy' }} {{ data.Local.Event.StartDate | Date: 'hh:mm:ss' }}</span>
+                <span class="_end">{{ data.Local.Event.EndDate | Date: 'MM-dd-yyyy' }} {{ data.Local.Event.EndDate | Date: 'hh:mm:ss' }}</span>
+                
+                <span class="_summary">{{ data.Local.Event.Name }}</span>
+                <span class="_description">{{ data.Local.Event.ShortDescription }}</span>
+                <span class="_location">{{ data.Local.Event.Business.Address }}</span>
+                <span class="_organizer">{{ data.Local.Event.Business.Name }}</span>
+                <span class="_organizer_email"></span>
+                <span class="_facebook_event"></span>
+                <span class="_all_day_event">false</span>
+                <span class="_date_format">MM-dd-YYYY</span>
+              </a>
             </p>
           </div>
         </article>
         
+        {% if data.Local.Attendees.size > 0 %}
+        <h4 id="comments">{% T Who is coming? %}</h4>
+        {% DivRow member in data.Local.Attendees cols:9 %}
+        <!-- member -->
+        <div class=" span1 text-center {% if member.CheckedIn %}checkedin{% endif %}">
+          <a title="{{ member.FullName }}" href="{% Url Directory, Profile, Id: member.Id, name: member.FullName | Clean %}" class="user_avatar">
+            <img class="img-circle" style="height: 50px; width: 50px;" height="50" width="50" src="{% Url Coworker, GetAvatar, id: member.Id, h:50, w:50 %}" alt="{{ member.FullName | Capitalize }}" >          
+          </a>
+        </div>
+        <!-- END member -->
+        {% endDivRow %}
+        <hr/>
+        {% endif %}
+        
+       
+        {% if data.Local.RelatedEvents.size > 0 %}
+        <!-- RELATED EVENTS -->
+        
+        <h4>{% T You may also like... %}</h4>
+        {% DivRow event in data.Local.RelatedEvents cols:3 %}
+        <div class="span3 post">
+          <ul class="post-info">
+            <li>
+              <span aria-hidden="true" class="icon i-16 icon-calendar"></span> <a href="{% Url Events, View, Id: event.Id, title: event.Name | Clean %}">{{ event.StartDate | Date: 'd MMMM @ hh:mm tt' }}</a>
+            </li>
+          </ul>
+          <a href="{% Url Events, View, Id: event.Id, title: event.Name | Clean %}">
+            {% if event.HasLargeImage %}
+            <img class="img-polaroid" src="{% Url Events, GetLargeImage, id: event.Id, h: 175, w: 350 %}" alt="{{ event.Name | StripHtml }}" />
+            {% elseif event.HasSmallImage %}
+            <img class="img-polaroid" src="{% Url Events, GetSmallImage, id: event.Id, h: 175, w: 350 %}" alt="{{ event.Name | StripHtml }}" />
+            {% endif %}
+          </a>
+          <p style="margin-top:5px">
+            {{ event.Name }}
+          </p>
+        </div>
+        {% endDivRow %}
+        <!-- END RELATED EVENTS -->
+        {% endif %}
+        
+        <!-- NEW COMMENT -->
         {% if data.Local.Event.AllowComments or data.Local.Event.Comments.size > 0  %}
-        <h3 id="comments">{% T Comments %}</h3>
+        <h4 id="comments">{% T Comments %}</h4>
         {% endif %}
         {% for comment in data.Local.Event.Comments %}
         <!-- COMMENT -->
@@ -80,7 +133,6 @@
         </div>
         <!-- END COMMENT -->
         {% endfor %}
-        <!-- NEW COMMENT -->
         {% if data.Local.Event.AllowComments %}
         {% if data.Coworker != null %}
         <div class="media comment comment-form">
@@ -107,7 +159,6 @@
         <div class="media comment comment-form">
           <a href="{% Url Login, Index %}?returnUrl={% Url events, view, id: data.Local.Event.Id, title: data.Local.Event.Name | Clean %}" class="btn btn-orange">{% T Login to leave a message %}</a>
         </div>
-        
         {% endif %}
         {% endif %}
         <!-- END NEW COMMENT -->
@@ -116,6 +167,20 @@
       
       <!-- SIDEBAR -->
       <aside id="sidebar-right" class="span3">
+        {% if data.Local.Categories.size > 0 %}
+        <!-- WIDGET SKILLS -->
+        <div class="widget widget-skills">
+          <div class="widget-title">
+            <h3>{% T Categories %}</h3>
+          </div>
+          <div class="widget-body">
+            {% for cat in data.Local.Categories %}
+            <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        <!-- END WIDGET SKILLS -->
+        {% endif %}
         {% if data.Setting_Social_Flickr != "" %}
         <!-- WIDGET FLICKR -->
         <div class="widget widget-flickr">
@@ -136,4 +201,21 @@
   </div>
   <!-- END CONTAINER -->
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="https://addthisevent.com/libs/1.5.8/ate.min.js"></script>
+<script type="text/javascript">
+addthisevent.settings({
+    license   : "a405mv4wfzncermbtmjd",
+    mouse     : false,
+    css       : false,
+    outlook   : {show:true, text:"Outlook Calendar"},
+    google    : {show:true, text:"Google Calendar"},
+    yahoo     : {show:true, text:"Yahoo Calendar"},
+    hotmail   : {show:true, text:"Hotmail Calendar"},
+    ical      : {show:true, text:"iCal Calendar"},
+    facebook  : {show:true, text:"Facebook Event"},
+    callback  : ""
+});
+</script>
 {% endblock %}

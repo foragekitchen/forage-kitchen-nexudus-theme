@@ -35,16 +35,7 @@
         <div class="body-content" style="margin-bottom: 25px">
           <div class="media">
             <div class="media-object pull-left">
-                <img class="img-circle" style="max-width: 140px" src="{% Url Coworker, GetAvatar, Id: data.Local.Coworker.Id, h:140, w:140 %}" />
-                <p class="text-center" style="margin-top: 5px; max-width: 140px">
-                {% if data.Local.Coworker.CompanyName.size > 0 %}
-                <a href="{% Url Directory, Search, company: data.Local.Coworker.CompanyName %}">{{ data.Local.Coworker.CompanyName }}</a>
-                {% endif %}
-                {% if data.Local.Coworker.BusinessArea.size > 0 %}
-                <br/>
-                <small>{{ data.Local.Coworker.BusinessArea }}</small>
-                {% endif %}
-                </p>
+              <img class="img-circle" style="max-width: 140px" src="{% Url Coworker, GetAvatar, Id: data.Local.Coworker.Id, h:140, w:140 %}" />
             </div>
             <div class="media-body">
               <h4>{% T My profile %}</h4>
@@ -85,6 +76,19 @@
             </div>
           </div>
         </div>
+        <hr/>
+        {% if data.Local.RelatedMembers.size > 0 %}
+        <h4 id="comments">{% T Other people like {0} || data.Local.Coworker.Salutation %}</h4>
+        {% DivRow member in data.Local.RelatedMembers cols:9 %}
+        <!-- member -->
+        <div class=" span1 text-center {% if member.CheckedIn %}checkedin{% endif %}">
+          <a title="{{ member.FullName }}" href="{% Url Directory, Profile, Id: member.Id, name: member.FullName | Clean %}" class="user_avatar"><img class="img-circle" style="height: 42px; width:42px;" height="50" width="50" src="{% Url Coworker, GetAvatar, id: member.Id, h:42, w:42 %}" alt="{{ member.FullName | Capitalize }}" ></a>
+          <br/>
+          <small>{{ member.Salutation }}</small>
+        </div>
+        <!-- END member -->
+        {% endDivRow %}
+        {% endif %}
         <br class="clearfix"/>
         {% if data.Setting_PublicWebSite_CommunityBoard and data.Local.Threads.size > 0 %}
         <div class="row">

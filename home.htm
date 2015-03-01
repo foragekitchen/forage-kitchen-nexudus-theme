@@ -1,4 +1,11 @@
 {% extends master.master %}
+{% block script %}
+<script>
+  $(document).ready(function() {
+  $('#myCarousel').carousel({ interval: 3000, cycle: true });
+});
+</script>
+{% endblock %}
 {% block content %}
 
 <div id="wrapper">

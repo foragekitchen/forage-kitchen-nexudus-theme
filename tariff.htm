@@ -153,4 +153,9 @@
     $('#modal-tariff-{{data.Local.PricePlanId}}').modal();
 </script>
 {% endif %}
+<script>
+    $(function () {
+        $('.modal-body a').attr('target', '_blank');
+    });
+</script>
 {% endblock %}

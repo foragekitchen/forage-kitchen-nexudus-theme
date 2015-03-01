@@ -6,7 +6,12 @@
     <!-- BREADCRUMB -->
     <ul class="breadcrumb">
       <li><a href="{% Url PublicHome, Index %}">{% T Home %}</a> <span class="divider">/</span></li>
+      {% if data.Local.Category != null %}
+      <li><a href="{% Url Events, Index, categoryId: null, title: null %}">{% T Events %}</a> <span class="divider">/</span></li>
+      <li class="active">{% T data.Local.Category.Title %}</li>
+      {% else %}
       <li class="active">{% T Events %}</li>
+      {% endif %}
     </ul>
     <!-- END BREADCRUMB -->
     <div class="row">
@@ -14,8 +19,10 @@
       <!-- CONTENT -->
       <section id="content" class="span9">
         {% if data.Local.CalendarEvents.size == 0 %}
-        <h3 class="well">{% T There are no more events. %}</h3>
-        <a class="btn btn-orange" href="{% Url Blog, Index, page: data.Local.Page | Minus: 1 %}">{% T Go back %}</a>
+          <h3 class="well">{% T There are no more events. %}</h3>
+          {% if data.Local.Page > 1 %}
+          <a class="btn btn-orange" href="{% Url Events, Index, page: data.Local.Page | Minus: 1 %}">{% T Go back %}</a>
+          {% endif %}
         {% endif %}
         {% for ev in data.Local.CalendarEvents %}
         <article class="post">
@@ -46,9 +53,23 @@
                 {{ ev.ShortDescription | StripHtml | MarkDown }}
                 <p>
                   <a class="btn btn-orange" href="{% Url Events, View, Id: ev.Id, title: ev.Name | Clean %}">{% T Read more %}</a>
-                  <a class="btn btn-grey" href="{% Url Events, ICal, Id: ev.Id, title: ev.Name | Clean %}">
-                    <i class="icon-calendar"></i> 
-                    {% T Add to Calendar %}</a>
+                  {% if ev.TicketsPage.size > 0 %}
+                  <a class="btn btn-grey" href="{{ ev.TicketsPage }}"><i class="icon-calendar"></i> {% T Tickets %}</a>
+                  {% endif %}
+                  <a href="{% Url Events, ICal, Id: ev.Id, title: ev.Name | Clean %}" title="{% T Add to Calendar %}" class="btn btn-grey addthisevent">
+                    {% T Add to Calendar %}
+                    <span class="_start">{{ ev.StartDate | Date: 'MM-dd-yyyy' }} {{ ev.StartDate | Date: 'hh:mm:ss' }}</span>
+                    <span class="_end">{{ ev.EndDate | Date: 'MM-dd-yyyy' }} {{ ev.EndDate | Date: 'hh:mm:ss' }}</span>
+                
+                    <span class="_summary">{{ ev.Name }}</span>
+                    <span class="_description">{{ ev.ShortDescription }}</span>
+                    <span class="_location">{{ ev.Business.Address }}</span>
+                    <span class="_organizer">{{ ev.Business.Name }}</span>
+                    <span class="_organizer_email"></span>
+                    <span class="_facebook_event"></span>
+                    <span class="_all_day_event">false</span>
+                    <span class="_date_format">MM-dd-YYYY</span>
+                  </a>
                 </p>    
               </div>
             </div>                   
@@ -83,6 +104,20 @@
       
       <!-- SIDEBAR -->
       <aside id="sidebar-right" class="span3">
+		{% if data.Local.Categories.size > 0 %}
+        <!-- WIDGET SKILLS -->
+        <div class="widget widget-skills">
+          <div class="widget-title">
+            <h3>{% T Categories %}</h3>
+          </div>
+          <div class="widget-body">
+            {% for cat in data.Local.Categories %}
+            <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        <!-- END WIDGET SKILLS -->
+        {% endif %}
         {% if data.Setting_Social_Flickr != "" %}
         <!-- WIDGET FLICKR -->
         <div class="widget widget-flickr">
@@ -102,4 +137,21 @@
   </div>
   <!-- END CONTAINER -->
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="https://addthisevent.com/libs/1.5.8/ate.min.js"></script>
+<script type="text/javascript">
+addthisevent.settings({
+    license   : "a405mv4wfzncermbtmjd",
+    mouse     : false,
+    css       : false,
+    outlook   : {show:true, text:"Outlook Calendar"},
+    google    : {show:true, text:"Google Calendar"},
+    yahoo     : {show:true, text:"Yahoo Calendar"},
+    hotmail   : {show:true, text:"Hotmail Calendar"},
+    ical      : {show:true, text:"iCal Calendar"},
+    facebook  : {show:true, text:"Facebook Event"},
+    callback  : ""
+});
+</script>
 {% endblock %}
