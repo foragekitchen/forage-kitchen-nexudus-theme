@@ -24,7 +24,7 @@
                 <select id="resource-filter" class="pull-right hidden-phone" style="margin-top: 5px">
                     <option value="">{% T Show all resources %}</option>
                     {% for resource in data.Resources %}
-                    <option {%if data.local.resource.id= =resource.Id %}selected="selected" {%endif%} value="{{ resource.Id }}">{{ resource.Name }}</option>
+                    <option {% if data.local.resource.id= =resource.Id %}selected="selected" {%endif%} value="{{ resource.Id }}">{{ resource.Name }}</option>
                     {% endfor %}
                 </select>
             </h2>
@@ -33,7 +33,7 @@
             <section id="content" class="span12">
                 {% if data.Coworker != null or data.Setting_Bookings_EnableGuestBookings %}
                 <div class="alert alert-info fade in text-center">
-                    <b>{% T Click in the calendar to request a booking. %}</b>
+                    <b>{% T Click on the calendar to request a booking. %}</b>
                 </div>
                 {% else %}
                 <p>
@@ -68,53 +68,6 @@
     {% include booking.htm %}
 </div>
 
-<!-- UNPAID BOOKING MODAL -->
-{% if data.Local.UnpaidBookings.size > 0 %}
-<!-- MODAL -->
-<div id="modal_unpaidbooking" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-
-    <form class="row-fluid" action="{% Url Bookings, Pay %}" method="post">
-        <!-- MODAL HEADER-->
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
-            <h3>{% T Booking payment %}</h3>
-        </div>
-        <!-- END MODAL HEADER-->
-        <!-- MODAL BODY-->
-        <div class="modal-body">
-            <h5>
-                {% T The following bookings require payment before they are confirmed: %}
-            </h5>
-            <table class="table">
-                <thead>
-                <th>{% T Resource %}</th>
-                <th>{% T From %}</th>
-                </thead>
-                <tbody>
-                    {% for booking in data.Local.UnpaidBookings %}
-                    <tr>
-                        <td>{{ booking.Resource.Name }}</td>
-                        <td>{{ booking.FromTime | FormatDate: 'g' }} </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <div class="alert alert-info">
-                {% T Please pay the bookings above within the next 15 minutes to make sure the booking slot is not made available to other members %}
-            </div>
-        </div>
-        <!-- END MODAL BODY-->
-        <!-- MODAL FOOTER-->
-        <div class="modal-footer">
-            <button class="btn btn-link" data-dismiss="modal" aria-hidden="true">{% T Go back %}</button>
-            <button type="submit" class="btn btn-orange">{% T Pay these bookings %}</button>
-        </div>
-    </form>
-    <!-- END MODAL FOOTER-->
-</div>
-<!-- END MODAL -->
-{% endif %}
-<!-- END UNPAID BOOKING MODAL -->
 {% endblock %}
 {% block script %}
 
@@ -166,6 +119,8 @@
         },
         defaultView: $(window).width() < 768 ? 'basicDay' : '{% if data.Local.Resource.Id > 0 %}agendaDay{% else %}resourceDay{% endif %}',
         editable: true,
+        displayEventEnd: true,
+        defaultDate: moment('{{ data.Local.CurrentDate }}'),
         header: {
             left:   $(window).width() >= 768 ? 'title' : null,
             center: $(window).width() < 768 ? 'basicDay' : 'month, agendaWeek, {% if data.Local.Resource.Id > 0 %}agendaDay{% else %}resourceDay{% endif %}',
@@ -210,7 +165,7 @@
     {% for event in data.Local.Events %}
     {
     private: true,
-    url: '{% Url events, view, id: event.Id, title: event.Name | Clean %}',
+    url: '{% Url events, view, id: event.Id, title: event.Name | Clean %}',{% if event.Resource != null %}resources: {{ event.Resource.Id }},{% endif %}
     title  : '{{ event.Name | Replace: "'", "\'" }}',
     start  : '{{ event.StartDate | Date: 'yyyy' }}-{{ event.StartDate | Date: 'MM' }}-{{ event.StartDate | Date: 'dd' }}T{{ event.StartDate | Date: 'HH' }}:{{ event.StartDate | Date: 'mm' }}Z',
     end  : '{{ event.EndDate | Date: 'yyyy' }}-{{ event.EndDate | Date: 'MM' }}-{{ event.EndDate | Date: 'dd' }}T{{ event.EndDate | Date: 'HH' }}:{{ event.EndDate | Date: 'mm' }}Z',
@@ -299,8 +254,9 @@
             else
                 url = '{% Url Bookings, NewBookingJson %}';
 
+            var fromDateFormatted = moment($('#Booking_From').datetimepicker('getDate')).format('YYYY-MM-DD');
             var data = getBookingData();
-            postAndClose(url, data, function(){ location.reload(true); });
+            postAndClose(url, data, function(){ window.location = '{% Url Bookings, Index %}?date=' + fromDateFormatted; });
             event.preventDefault();
         });
 
@@ -309,7 +265,8 @@
             {
                 var url = '{% Url Bookings, DeleteJson %}';
                 var id = $('#booking_id').val();
-                postAndClose(url, {id: id}, function(){ location.reload(true); });
+                var fromDateFormatted = moment($('#Booking_From').datetimepicker('getDate')).format('YYYY-MM-DD');
+                postAndClose(url, {id: id}, function(){ window.location = '{% Url Bookings, Index %}?date=' + fromDateFormatted; });
             }
             return false;
         });

@@ -48,7 +48,7 @@
               {% if data.Local.Event.TicketsPage != null %}
               <a href="{{data.Local.Event.TicketsPage}}" class="btn btn-grey">
                 <i class="icon-ticket"></i>
-                {% T Buy Tickets %}</a>
+                {% T Get Tickets %}</a>
               {% endif %}
               <a href="{% Url Events, ICal, Id: data.Local.Event.Id, title: ev.Name | Clean %}" title="{% T Add to Calendar %}" class="btn btn-grey addthisevent">
                 {% T Add to Calendar %}
