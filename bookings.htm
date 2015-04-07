@@ -1,4 +1,5 @@
 {% extends master.master %}
+{% block title %}{% if data.Local.Resource == null %}{{ data.Local.Resource.Name }} | {% endif %}{% T Events and bookings %} | {{ data.Business.Name }}{% endblock %}
 {% block content %}
 <div id="wrapper">
     <!-- CONTAINER -->
@@ -120,7 +121,7 @@
         defaultView: $(window).width() < 768 ? 'basicDay' : '{% if data.Local.Resource.Id > 0 %}agendaDay{% else %}resourceDay{% endif %}',
         editable: true,
         displayEventEnd: true,
-        defaultDate: moment('{{ data.Local.CurrentDate }}'),
+        defaultDate: moment('{{ data.Local.CurrentDate | FormatDate: 'yyyy-MM-dd' }}'),
         header: {
             left:   $(window).width() >= 768 ? 'title' : null,
             center: $(window).width() < 768 ? 'basicDay' : 'month, agendaWeek, {% if data.Local.Resource.Id > 0 %}agendaDay{% else %}resourceDay{% endif %}',

@@ -1,4 +1,5 @@
 {% extends master.master %}
+{% block title %}{% T Additional Products %} | {{ data.Business.Name }}{% endblock %}
 {% block content %}
 <div id="wrapper">
   <!-- CONTAINER -->
@@ -116,7 +117,7 @@
         </div>
         <div class="modal-footer">
           <a href="#" class="btn btn-link" data-bind="click: closeConfirmation">{% T Cancel %}</a>
-          <a href="#" class="btn btn-orange" data-bind="click: doPurchase">{% T Continue %}</a>
+            <a href="#" class="btn btn-orange" data-bind="click: doPurchase, enable: doPurchaseEnabled, text: doPurchaseEnabled() ? '{% T Continue %}' : '{% T Please wait... %}'">{% T Continue %}</a>
         </div>
       </div>
       

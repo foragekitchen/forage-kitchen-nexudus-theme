@@ -1,4 +1,5 @@
 {% extends master.master %}
+{% block title %}{{ data.Local.Coworker.FullName | StripHtml }} | {{ data.Business.Name }} {% endblock %}
 {% block script %}
 <script src="/scripts/jquery.timeago.js"></script>
 <script src="/scripts/jquery.timeago.{{ data.Language }}.js"></script>

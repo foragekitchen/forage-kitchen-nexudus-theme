@@ -1,4 +1,5 @@
 {% extends master.master %}
+{% block title %}{{ data.Local.Team.Name | StripHtml }} | {{ data.Business.Name }} {% endblock %}
 {% block content %}
 
 <div id="wrapper">
@@ -8,7 +9,7 @@
     <ul class="breadcrumb">
       <li><a href="{% Url PublicHome, Index %}">{% T Home %}</a> <span class="divider">/</span></li>
       <li><a href="{% Url Directory, Index %}">{% T People at {0} || data.Business.Name %}</a> <span class="divider">/</span></li>
-      <li class="active">{{ data.Local.Team.Name }}</li>
+      <li class="active">{{ data.Local.Team.Name | StripHtml }}</li>
     </ul>
     <!-- END BREADCRUMB -->
     <div class="row">
@@ -19,7 +20,7 @@
           <div class="span12 text-center team_block">
             <img class="img-circle" style="height: 200px; width: 200px;" height="200" width="200" src="{% Url Team, GetAvatar, id: data.Local.Team.Id, h:200, w:200, mode: 'Pad' %}" alt="{{ data.Local.Team.Name | Capitalize }}" >          
             <br/>
-            <h3>{{ data.Local.Team.Name }}</h3>
+            <h3>{{ data.Local.Team.Name | StripHtml }}</h3>
             {% if data.Local.Team.ProfileWebsite.size > 0 %}
             <a target="_blank" href="{{ data.Local.Team.ProfileWebsite }}" class="btn btn-grey"><span aria-hidden="true" class="icon i-16 icon-earth"></span></a>
             {% endif %}

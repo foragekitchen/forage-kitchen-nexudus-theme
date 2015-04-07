@@ -1,4 +1,5 @@
 {% extends master.master %}
+{% block title %}{% T People at {0} || data.Business.Name %}{% endblock %}
 {% block content %}
 {% if data.Local.ShowCheckInMembers and data.Local.CheckedIn == false  %}
 <style>

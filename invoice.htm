@@ -70,20 +70,20 @@
       </div>
       <div class="vcard" id="client-details">
         <div class="org">
-          {{ data.Local.Invoice.BillToName }}
+          {{ data.Local.Invoice.BillToName | Replace: 'Not Available', '' }}
         </div>
         <div class="adr">
           <div class="street-address">
-            {{ data.Local.Invoice.BillToTaxIDNumber }}
+            {{ data.Local.Invoice.BillToTaxIDNumber | Replace: 'Not Available', '' }}
           </div>
           <div class="street-address">
-            {{ data.Local.Invoice.BillToAddress | NewLineToBr }}
+            {{ data.Local.Invoice.BillToAddress | Replace: 'Not Available', '' | NewLineToBr }}
           </div>
           <div class="locality">
-            {{ data.Local.Invoice.BillToCity }}
+            {{ data.Local.Invoice.BillToCity | Replace: 'Not Available', '' }}
           </div>
           <div id="client-postcode">
-            <span class="postal-code">{{ data.Local.Invoice.BillToPostCode }}</span>
+            <span class="postal-code">{{ data.Local.Invoice.BillToPostCode | Replace: 'Not Available', '' }}</span>
           </div>
         </div>
       </div>
@@ -115,10 +115,10 @@
             </td>
             <td colspan="1" class="total" id="total_currency">
               {% T Tax %}
-              ({{ taxCat.Rate | FormatDecimal: '0.00' }}%)
+              ({{ taxCat.Rate | FormatDecimal: 'N' }}%)
             </td>
             <td class="total" id="total_amount">
-              {{ taxCat.TaxSubTotal | FormatDecimal: '0.00' }}
+              {{ taxCat.TaxSubTotal | FormatDecimal: 'N' }}
             </td>
             <td>&nbsp;</td>
           </tr>
@@ -128,11 +128,11 @@
               &nbsp;
             </td>
             <td colspan="1" class="total" id="Td1">
-              {{ data.Local.Invoice.TotalAmount | FormatDecimal: '0.00' }}
+              {{ data.Local.Invoice.TotalAmount | FormatDecimal: 'N' }}
               (<span class="currency">{{ data.Local.Invoice.Currency.Code }}</span>)
             </td>
             <td class="total" id="Td2">
-              {{ data.Local.Invoice.TotalAmount | FormatDecimal: '0.00' }}
+              {{ data.Local.Invoice.TotalAmount | FormatDecimal: 'N' }}
             </td>
             <td>&nbsp;</td>
           </tr>
@@ -143,7 +143,7 @@
               {{ payment.PaymentDate | Date: 'D' }}
             </td>
             <td class="item_r">
-              {{ payment.Credit | FormatDecimal: '0.00' }}
+              {{ payment.Credit | FormatDecimal: 'N' }}
             </td>
             <td>&nbsp;</td>
           </tr>
@@ -154,7 +154,7 @@
               (<span class="currency">{{ data.Local.Invoice.Currency.Code  }}</span>)
             </td>
             <td class="total">
-              {{ data.Local.Invoice.TransactionTotalAmount | FormatDecimal: '0.00' }}
+              {{ data.Local.Invoice.TransactionTotalAmount | FormatDecimal: 'N' }}
             </td>
             <td>&nbsp;</td>
           </tr>
@@ -169,13 +169,13 @@
               {{ line.Description }}
             </td>
             <td class="item_r price_td">
-              {{ line.UnitPrice | FormatDecimal: '0.00' }}
+              {{ line.UnitPrice | FormatDecimal: 'N' }}
             </td>
             <td class="item_r subtotal_td">
-              {{ line.SubTotal | FormatDecimal: '0.00' }}
+              {{ line.SubTotal | FormatDecimal: 'N' }}
             </td>
             <td class="item_r subtotal_td">
-              {{ line.TaxPercentage | FormatDecimal: '0.00' }}%
+              {{ line.TaxPercentage | FormatDecimal: 'N' }}%
             </td>
           </tr>
           {% endfor %}

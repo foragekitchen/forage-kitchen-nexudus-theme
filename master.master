@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="{{ data.Language }}">
+<html lang="{{ data.Language }}" {% block htmlTag %}{% endblock %}>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     
-    <title>{{ data.Business.Name }}</title>
+    <title>{% block title %}{{ data.Business.Name }}{% endblock %}</title>
     <link rel="shortcut icon" href="img/favicon.ico" />
     
     <!-- META -->
-    <meta name="description" content="{{ data.Business.Name }}"/>
-    <meta name="keywords" content="coworking space"/>
+    <meta name="description" content="{% block description %}{{ data.Business.Name }}{% endblock %}"/>
+    <meta name="keywords" content="{% block keywords %}coworking space booking meeting rooms events desks hot-desks{% endblock %}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block meta %}{% endblock %}
     
+
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/css/bootstrap-responsive.min.css"/>

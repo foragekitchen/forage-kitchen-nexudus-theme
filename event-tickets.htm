@@ -1,4 +1,5 @@
 {% extends master.master %}
+{% block title %}{{ data.Local.Event.Name }} | {% T Tickets %} | {{ data.Business.Name }}{% endblock %}
 {% block content %}
 <div id="wrapper">
     <!-- CONTAINER -->
@@ -60,10 +61,22 @@
                                         <label for="Coworker_Email">{% T Email %}</label>
                                         <input type="text" id="Coworker_Email" name="Coworker.Email" data-bind="value: coworker.email" class="span12">
                                     </div>
-
                                 </div>
+                                <!--
+                                <div class="row-fluid">
+                                  <div class="span12">
+                                    <label for="Coworker_CreateUser" class="checkbox">
+                                      <input id="Coworker_CreateUser" name="Coworker.CreateUser" type="checkbox" value="true" data-bind="checked: coworker.createUser"/>
+                                      <input id="Coworker_CreateUser_Hidden" name="Coworker.CreateUser" type="hidden" value="false" />
+                                      {% T Remember my details %}
+                                      <br/>
+                                      <small>{% T We will send you an email with your access details so you can quickly sign up to other events. %}</small>
+                                    </label>
+                                  </div>
+                                </div>
+                                -->
                             </div>
-
+                            {% if data.Local.Event.AskBuyerAddress %}
                             <h3>{% T Account details %}</h3>
                             <div class="well">
                                 <div class="row-fluid">
@@ -87,6 +100,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                         <div class="span6">
                             <h3>{% T ... or log in %}</h3>
@@ -105,8 +119,8 @@
                                 <thead>
                                     <tr>
                                         <th class="span8">{% T Product %}</th>
-                                        <th class="span1">{% T Price %}</th>
-                                        <th class="span1">{% T Qty. %}</th>
+                                        <th class="span1 hidden-phone">{% T Price %}</th>
+                                        <th class="span1 hidden-phone">{% T Qty. %}</th>
                                     </tr>
                                 </thead>
                                 <tbody data-bind="foreach: products, visible: products().length > 0" style="display: none">
@@ -130,9 +144,17 @@
 
                                                 </i>
                                             </small>
+                                            <div class="visible-phone">
+                                                <br />
+                                                <select style="width:50px" data-bind="value: Quantity, optionsCaption: '', options: qtys, visible: IsAvailableNow() && !SoldOut()"></select>
+                                                <select data-bind="visible: !IsAvailableNow() || SoldOut()" disabled="disabled" style="width:50px"><option>0</option></select>
+                                                x
+                                                <span data-bind="text: PriceFormatted"></span>
+
+                                            </div>
                                         </td>
-                                        <td><span data-bind="text: PriceFormatted"></span></td>
-                                        <td>
+                                        <td class="hidden-phone"><span data-bind="text: PriceFormatted"></span></td>
+                                        <td class="hidden-phone">
                                             <select style="width:50px" data-bind="value: Quantity, optionsCaption: '', options: qtys, visible: IsAvailableNow() && !SoldOut()"></select>
                                             <select data-bind="visible: !IsAvailableNow() || SoldOut()" disabled="disabled" style="width:50px"><option>0</option></select>
                                         </td>
@@ -143,7 +165,7 @@
                             <table class="table" style="border-top: 1px solid black">
                                 <tbody>
                                     <tr>
-                                        <th class="span10"><p class="text-right">{% T One-off Payment: %}</p></th>
+                                        <th class="span10 hidden-phone"><p class="text-right">{% T One-off Payment: %}</p></th>
                                         <th class="span2">
                                             {{ data.Business.Currency.Code }}
                                             <span data-bind="text: totalOneOff"></span>
@@ -166,19 +188,26 @@
                                 <thead>
                                     <tr>
                                         <th class="span3">{% T Ticket %}</th>
-                                        <th class="span6">{% T Fullname %}</th>
-                                        <th class="span3">{% T Email %}</th>
+                                        <th class="span6 hidden-phone">{% T Fullname %}</th>
+                                        <th class="span3 hidden-phone">{% T Email %}</th>
                                     </tr>
                                 </thead>
                                 <tbody data-bind="foreach: attendees">
                                     <tr>
                                         <td>
-                                            <span data-bind="text: productName"></span><br />
+                                            <strong><span data-bind="text: productName"></span></strong><br /><br />
+                                            <div class="visible-phone row-fluid">
+                                                {% T Fullname %}<br />
+                                                <input class="span12" data-bind="value: fullName" type="text" />
+                                                <br />
+                                                {% T Email %}<br />
+                                                <input class="span12" data-bind="value: email" type="email" /><br />
+                                            </div>
                                         </td>
-                                        <td>
+                                        <td class="hidden-phone">
                                             <input class="span12" data-bind="value: fullName" type="text" /><br />
                                         </td>
-                                        <td>
+                                        <td class="hidden-phone">
                                             <input class="span12" data-bind="value: email" type="email" /><br />
                                         </td>
                                     </tr>
@@ -239,7 +268,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-link" data-bind="click: closeConfirmation">{% T Back %}</button>
-                    <button class="btn btn-orange" data-bind="click: doPurchase, enable: doPurchaseEnabled">{% T Continue %}</button>
+                    <button class="btn btn-orange" data-bind="click: doPurchase, enable: doPurchaseEnabled, text: doPurchaseEnabled() ? '{% T Continue %}' : '{% T Please wait... %}'">{% T Continue %}</button>
                 </div>
             </div>
 

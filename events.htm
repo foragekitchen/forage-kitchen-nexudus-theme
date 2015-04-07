@@ -1,4 +1,5 @@
 {% extends master.master %}
+{% block title %}{% if data.Local.Category != null %}{{  data.Local.Category.Title | Capitalize }} | {% endif %}{% T Events %} | {{ data.Business.Name }} {% endblock %}
 {% block content %}
 <div id="wrapper">
   <!-- CONTAINER -->
@@ -112,7 +113,7 @@
           </div>
           <div class="widget-body">
             {% for cat in data.Local.Categories %}
-            <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title }}</a>
+            <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title | Capitalize }}</a>
             {% endfor %}
           </div>
         </div>

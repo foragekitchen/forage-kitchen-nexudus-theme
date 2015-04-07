@@ -1,4 +1,36 @@
 {% extends master.master %}
+{% block htmlTag %}itemscope itemtype="http://schema.org/Event"{% endblock %}
+{% block title %}{{ data.Local.Event.Name }} | {% T Events %} | {{ data.Business.Name }}{% endblock %}
+{% block meta %}
+
+<meta itemprop="name" content="{{ data.Local.Event.Name | StripHtml }}" />
+<meta itemprop="description" content="{{ data.Local.Event.ShortDescription | StripHtml }}" />
+{% if data.Local.BlogPost.HasImage %}
+<meta itemprop="image" content="https://{{ data.Business.WebAddress }}.{{ data.PublicSiteSubDomain }}{% Url Events, GetLargeImage, id: data.Local.Event.Id, w: 200, h: 200 %}" />
+{% endif %}
+
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@{{ data.Setting_Social_Twitter }}" />
+<meta name="twitter:title" content="{{ data.Local.Event.Name | StripHtml  | Truncate: 70 }}" />
+<meta name="twitter:description" content="{{ data.Local.Event.ShortDescription | StripHtml | Truncate: 200 }}" />
+<meta name="twitter:creator" content="@{{ data.Setting_Social_Twitter }}" />
+{% if data.Local.Event.HasLargeImage %}
+<meta name="twitter:image:src" content="https://{{ data.Business.WebAddress }}.{{ data.PublicSiteSubDomain }}{% Url Events, GetLargeImage, id: data.Local.Event.Id, w: 200, h: 200 %}" />
+{% endif %}
+
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ data.Local.Event.Name | StripHtml }}" />
+<meta property="og:type" content="event" />
+{% if data.Local.Event.HasLargeImage %}
+<meta property="og:image" content="http://{{ data.Business.WebAddress }}.{{ data.PublicSiteSubDomain }}{% Url Events, GetLargeImage, id: data.Local.Event.Id, w: 800  %}" />
+<meta property="og:image:secure_url" content="https://{{ data.Business.WebAddress }}.{{ data.PublicSiteSubDomain }}{% Url Events, GetLargeImage, id: data.Local.Event.Id, w: 200, h: 200  %}" />
+{% endif %}
+<meta property="og:description" content="{{ data.Local.Event.ShortDescription | StripHtml }}" />
+<meta property="og:site_name" content="{{ data.Business.Name }}" />
+
+
+{% endblock %}
 {% block content %}
 <div id="wrapper">
   <!-- CONTAINER -->
@@ -15,7 +47,7 @@
       <!-- CONTENT -->
       <section id="content" class="span9">
         <article class="post">
-          <h2 class="page-title"><a href="{% Url events, view, id: data.Local.Event.Id, title: data.Local.Event.Name | Clean %}">{{ data.Local.Event.Name }}</a></h2>
+          <h2 class="page-title" itemprop="name"><a href="{% Url events, view, id: data.Local.Event.Id, title: data.Local.Event.Name | Clean %}">{{ data.Local.Event.Name }}</a></h2>
           <ul class="post-info">
             <li>
               <span aria-hidden="true" class="icon i-16 icon-calendar"></span> <a href="#">{{ data.Local.Event.StartDate | Date: 'D' }} @ {{ data.Local.Event.StartDate | Date: 'hh:mm tt' }}</a>
@@ -27,11 +59,11 @@
           <div class="body-content" style="{% if data.Local.Event.HasSmallImage %}min-height: 215px{% endif %}">
             {% if data.Local.Event.HasLargeImage %}
             <p>
-              <img src="{% Url Events, GetLargeImage, id: data.Local.Event.Id, w: 870 %}" alt="{{ data.Local.Event.Name | StripHtml }}" />
+              <img itemprop="image" src="{% Url Events, GetLargeImage, id: data.Local.Event.Id, w: 870 %}" alt="{{ data.Local.Event.Name | StripHtml }}" />
             </p>
             {% endif %}
-            <p>
-              {{ data.Local.Event.LongDescription }}
+            <p itemprop="description">
+                {{ data.Local.Event.LongDescription }}
             </p>
             
             <p>
@@ -175,7 +207,7 @@
           </div>
           <div class="widget-body">
             {% for cat in data.Local.Categories %}
-            <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title }}</a>
+            <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title | Capitalize }}</a>
             {% endfor %}
           </div>
         </div>
