@@ -1,5 +1,5 @@
 {% extends master.master %}
-{% block title %}{% if data.Local.Resource == null %}{{ data.Local.Resource.Name }} | {% endif %}{% T Events and bookings %} | {{ data.Business.Name }}{% endblock %}
+{% block title %}{% if data.Local.Resource != null %} {{ data.Local.Resource.Name }} | {% endif %}{% T Events and bookings %} | {{ data.Business.Name }}{% endblock %}
 {% block content %}
 <div id="wrapper">
     <!-- CONTAINER -->
@@ -25,7 +25,11 @@
                 <select id="resource-filter" class="pull-right hidden-phone" style="margin-top: 5px">
                     <option value="">{% T Show all resources %}</option>
                     {% for resource in data.Resources %}
-                    <option {% if data.local.resource.id= =resource.Id %}selected="selected" {%endif%} value="{{ resource.Id }}">{{ resource.Name }}</option>
+                    {% if data.Local.Resource.Id == resource.Id %}
+                    <option selected="selected" value="{{ resource.Id }}">{{ resource.Name }}</option>
+                    {% else %}
+                    <option value="{{ resource.Id }}">{{ resource.Name }}</option>
+                    {% endif %}
                     {% endfor %}
                 </select>
             </h2>

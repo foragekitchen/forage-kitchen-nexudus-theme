@@ -105,20 +105,19 @@
       
       <!-- SIDEBAR -->
       <aside id="sidebar-right" class="span3">
-		{% if data.Local.Categories.size > 0 %}
         <!-- WIDGET SKILLS -->
         <div class="widget widget-skills">
-          <div class="widget-title">
-            <h3>{% T Categories %}</h3>
-          </div>
-          <div class="widget-body">
-            {% for cat in data.Local.Categories %}
-            <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title | Capitalize }}</a>
-            {% endfor %}
-          </div>
+            <div class="widget-title">
+                <h3>{% T Categories %}</h3>
+            </div>
+            <div class="widget-body">
+                <a href="{% Url Events, Index, pastEvents: true %}" class="btn btn-{% if data.Local.PastEvents %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {% T Past Events %}</a>
+                {% for cat in data.Local.Categories %}
+                <a href="{% Url Events, Index, title: cat.Title | Clean, categoryId: cat.Id, page: 1 %}" class="btn btn-{% if data.Local.Category.Id == cat.Id %}orange{%else%}grey{%endif%}"><span aria-hidden="true" class="icon i-16 icon-tag"></span> {{ cat.Title }}</a>
+                {% endfor %}
+            </div>
         </div>
         <!-- END WIDGET SKILLS -->
-        {% endif %}
         {% if data.Setting_Social_Flickr != "" %}
         <!-- WIDGET FLICKR -->
         <div class="widget widget-flickr">

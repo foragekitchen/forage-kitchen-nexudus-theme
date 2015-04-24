@@ -59,13 +59,13 @@
       
         $(function(){
             {% if data.InfoMessage != "" %}
-            showInfoMessage("{{data.InfoMessage}}");
+            showInfoMessage("{{data.InfoMessage | Replace: '"' : '\"'}}");
             {% endif %}
             {% if data.ErrorMessage != "" %}
-            showErrorMessage("{{data.ErrorMessage}}");
+            showErrorMessage("{{data.ErrorMessage | Replace: '"' : '\"'}}");
             {% endif %}
             {% if data.SuccessMessage != "" %}
-            showSuccessMessage("{{data.SuccessMessage}}");
+            showSuccessMessage("{{data.SuccessMessage | Replace: '"' : '\"'}}");
             {% endif %}
 
             $('#modal_unpaidbooking').modal('show');
@@ -93,9 +93,11 @@
             $el.removeClass().addClass('alert');
             $el.addClass('alert-' + cssClass);
             $el.html(message);
-            $('#modal_messages').modal('show')
+            $('#modal_messages').modal('show');
         }
-       
+        if (top !== self) {
+            $('body').addClass('in-iframe');
+        }
     </script>
     {% block script %}
     {% endblock %}
