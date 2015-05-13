@@ -15,19 +15,27 @@
     
 
     <!-- CSS -->
+	<!-- 
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,700,600' rel='stylesheet' type='text/css'>
+	-->
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/css/bootstrap-responsive.min.css"/>
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,700,600' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/libs/full-calendar-resources/fullcalendar.css"/>
+
+	<!-- Copied from Forage Kitchen theme on Squarespace -->
+    <link rel="stylesheet" type="text/css" href="/files/site.css"/>
+    <link rel="stylesheet" type="text/css" href="/files/commerce-adc49121ab1707584a93e45cadb0b6b9-min.css"/>
+
     <link rel="stylesheet" type="text/css" href="{% Url Css, Index %}"/>
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/css/css-responsive.css"/>
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/css/icons.css"/>
+
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/js/chosen/chosen.min.css"/>
     <link rel="stylesheet" type="text/css" href="/content/themes/public/default/js/datetimepicker/css/bootstrap-datetimepicker.min.css" />
     
   </head>
   
-  <body>
+  <body id="collection-546a437ae4b07f6123935c9e" class="site-vertical-alignment-middle full-width-homepage  use-site-title-in-mobile-header folder-links-always-show index-links-parent-link-only product-category-links-parent-link-only show-social-icons social-icon-style-square product-list-style-showroom product-aspect-ratio-auto product-item-single-image-fill hide-product-share-button index-list-title-style-overlay index-aspect-ratio-auto gallery-single-image-fill  hide-blog-author  event-show-past-events event-thumbnails event-thumbnail-size-32-standard event-date-label  event-list-show-cats event-list-date event-list-time event-list-address   event-icalgcal-links  event-excerpts    event-list-compact-view   hide-opentable-icons opentable-style-dark newsletter-style-dark small-button-style-solid small-button-shape-square medium-button-style-solid medium-button-shape-square large-button-style-solid large-button-shape-square button-style-default button-corner-style-square native-currency-code-usd collection-546a437ae4b07f6123935c9e collection-type-page collection-layout-default homepage mobile-style-available site-title">
     {% include header.htm %}
     {% block content %}{% endblock %}
     {% include footer.htm %}
