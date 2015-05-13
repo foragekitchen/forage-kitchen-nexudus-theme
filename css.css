@@ -1,0 +1,5 @@
+
+body#signup header,  
+body#signup footer {
+  display: none;
+}
