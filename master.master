@@ -27,7 +27,7 @@
 
   </head>
   
-  <body id="{% block template-name %}{% endblock %}">
+  <body id="{{ data.Controller }}">
     {% include header.htm %}
     {% block content %}{% endblock %}
     {% include footer.htm %}
