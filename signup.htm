@@ -17,8 +17,25 @@
 
 
                 <form action="{% Url Signup, Index %}" method="POST" enctype="multipart/form-data" id="profile-form">
+                    <h3>{% T Pricing %}</h3>
+					<p>
+						Your selected price plan: 
+
+						{% case data.Local.PricePlanId %}
+						  {% when '42745730' %}
+						     Paring
+						  {% when '42745731' %}
+						     Santoku
+						  {% when '42745732' %}
+						     Chefs
+						  {% else %}
+						     Not recognized!
+						{% endcase %}
+					</p>
                     <input type="hidden" name="PricePlanId" value="{{ data.Local.PricePlanId }}" />
                     <input type="hidden" name="ReturnUrl" value="{{ data.Local.ReturnUrl }}" />
+										
+
                     <h3>{% T Personal Details %}</h3>
                     <div class="well">
                         <div class="row-fluid">

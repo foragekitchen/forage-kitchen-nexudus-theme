@@ -1,0 +1,12 @@
+<!-- this script inserts the iframe for Nexudus Signup form, with priceplanid parameter from the parent URL intact, passing it successfully into the iframe -->
+<script type="text/javascript">
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+	var sURLParams = {};
+    for (var i = 0; i < sURLVariables.length; i++) 
+	{
+		var subArr = sURLVariables[i].split('=');
+		sURLParams[subArr[0]] = subArr[1];
+	}
+	document.write('<iframe src="https://foragekitchen.spaces.nexudus.com/en/signup?priceplanid='+sURLParams['priceplanid']+'" scrolling="no" seamless></iframe>');
+</script>
