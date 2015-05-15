@@ -58,6 +58,11 @@
     {% if data.Language != 'en' %}
     <script type="text/javascript" src="/content/themes/public/default/js/datetimepicker/js/locales/bootstrap-datetimepicker.{{ data.Language }}.js" charset="UTF-8"></script>
     {% endif %}
+
+	<!-- Typekit -->
+	<script src="//use.typekit.net/afb5bue.js"></script>
+	<script>try{Typekit.load();}catch(e){}</script>
+
     <!--[if lte IE 7]><script src="js/lte-ie7.js"></script><![endif]-->
     <script type="text/javascript" src="/content/themes/public/default/js/knockout-2.3.0.js"></script>
     <script type="text/javascript" src="/content/themes/public/default/js/knockout.mapping-latest.js"></script>
