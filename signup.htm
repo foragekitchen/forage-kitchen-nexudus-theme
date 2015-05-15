@@ -3,6 +3,18 @@
 {% block template-name %}signup{% endblock %}
 
 {% block content %}
+
+{% assign PricePlanName = null %}
+{% case data.Local.PricePlanId %}
+  {% when '42745730' %}
+     {% assign PricePlanName = "Paring" %}
+  {% when '42745731' %}
+     {% assign PricePlanName = "Santoku" %}
+  {% when '42745732' %}
+     {% assign PricePlanName = "Chefs" %}
+{% endcase %}
+
+{% if PricePlanName != null %}
 <div id="wrapper">
     <!-- CONTAINER -->
     <div id="main" class="container">
@@ -18,20 +30,7 @@
 
                 <form action="{% Url Signup, Index %}" method="POST" enctype="multipart/form-data" id="profile-form">
                     <h3>{% T Pricing %}</h3>
-					<p>
-						Your selected price plan: 
-
-						{% case data.Local.PricePlanId %}
-						  {% when '42745730' %}
-						     Paring
-						  {% when '42745731' %}
-						     Santoku
-						  {% when '42745732' %}
-						     Chefs
-						  {% else %}
-						     Not recognized!
-						{% endcase %}
-					</p>
+					<p>Your selected price plan: {% T PricePlanName %}</p>
                     <input type="hidden" name="PricePlanId" value="{{ data.Local.PricePlanId }}" />
                     <input type="hidden" name="ReturnUrl" value="{{ data.Local.ReturnUrl }}" />
 										
@@ -193,6 +192,15 @@
     </div>
     <!-- END CONTAINER -->
 </div>
+
+{% else %}
+
+<div id="wrapper">
+	<h3>Uh oh!</h3>
+	<p>Please <a href="http://www.foragekitchen.com/pricing/" target="_parent">go back</a> and select a membership plan.</p>
+</div>
+
+{% endif %}
 
 {% endblock %}
 {% block script %}
