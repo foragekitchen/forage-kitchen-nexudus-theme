@@ -4,6 +4,12 @@ body, p, h1, h2, h3, h4 {
 
 
 body#signup header,  
-body#signup footer {
+body#signup footer,
+body#tariff header,  
+body#tariff footer {
   display: none;
+}
+
+body#signup div#main {
+  padding-top: 0;
 }
