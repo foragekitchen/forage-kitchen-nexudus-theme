@@ -1,12 +1,36 @@
-body, p, h1, h2, h3, h4 {
+/* Basic type resets */
+body, form, div, p, h1, h2, h3, h4 {
   font-family: "pt-sans-caption";
 }
+p {
+  font-size: 0.875em; /* 14px */
+  line-height: 1.57em; /* 22px/14px */
+  margin-bottom: 22px;
+}
+h1 {
+  font-size: 2.5em; /* 40px */
+  line-height: 1.1em; /* 44px/40px */
+  margin-bottom: 22px;
+}
+h2 {
+  font-size: 2.25em; /* 36px */
+  line-height: 1.22em; 
+  margin-bottom: 22px;
+}
+h3 {
+  font-size: 1.125em; /* 18px */
+  line-height: 1.22em; 
+  margin-bottom: 22px;
+}
 
+
+/* Go chrome-less whenever content is embedded inside an iframe */
 body.in-iframe header,  
 body.in-iframe footer {
   display: none !important;
 }
 
 body.in-iframe div#main {
+  margin-left: inherit;
   padding-top: 0;
 }
