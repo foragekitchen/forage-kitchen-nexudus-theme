@@ -30,7 +30,7 @@
   <body id="{{ data.Controller }}">
     {% include header.htm %}
     {% block content %}{% endblock %}
-    {% include footer.htm %}
+    {% comment %}{% include footer.htm %}{% endcomment %}
     
     <!-- JS -->
     
