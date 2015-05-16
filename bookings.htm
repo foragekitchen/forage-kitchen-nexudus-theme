@@ -6,7 +6,6 @@
     <div id="main" class="container">
         <!-- BREADCRUMB -->
         <ul class="breadcrumb">
-            <li><a href="{% Url PublicHome, Index %}">{% T Home %}</a> <span class="divider">/</span></li>
             {% if data.Local.Resource == null %}
             <li class="active">{% T Events and bookings %}</li>
             {% else %}
