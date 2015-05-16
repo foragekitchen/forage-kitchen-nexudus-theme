@@ -1,6 +1,11 @@
 {% extends master.master %}
 {% block title %}{% T My account %} | {{ data.Business.Name }}{% endblock %}
 {% block content %}
+
+<script type="text/javascript">
+	if (top !== self) { window.top.location.href = "https://foragekitchen.spaces.nexudus.com/en/bookings"; }
+</script>
+
 <div id="wrapper">
     <!-- CONTAINER -->
     <div id="main" class="container">
