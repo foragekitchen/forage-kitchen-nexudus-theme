@@ -32,6 +32,11 @@
     {% block content %}{% endblock %}
     {% comment %}{% include footer.htm %}{% endcomment %}
     
+	<!-- Typekit -->
+	<script src="//use.typekit.net/afb5bue.js"></script>
+	<script>try{Typekit.load();}catch(e){}</script>
+
+
     <!-- JS -->
     
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment-with-locales.min.js"></script>
@@ -50,16 +55,15 @@
     <script type="text/javascript" src="/content/themes/public/default/js/datetimepicker/js/locales/bootstrap-datetimepicker.{{ data.Language }}.js" charset="UTF-8"></script>
     {% endif %}
 
-	<!-- Typekit -->
-	<script src="//use.typekit.net/afb5bue.js"></script>
-	<script>try{Typekit.load();}catch(e){}</script>
-
-
     <!--[if lte IE 7]><script src="js/lte-ie7.js"></script><![endif]-->
     <script type="text/javascript" src="/content/themes/public/default/js/knockout-2.3.0.js"></script>
     <script type="text/javascript" src="/content/themes/public/default/js/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="{% Url JS, Index %}"></script>
     <script>
+	    if (top !== self) {
+	        $('body').addClass('in-iframe');
+	    }
+
         var flickrID = '{% Setting Social.Flickr %}';
         !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
       
@@ -100,9 +104,6 @@
             $el.addClass('alert-' + cssClass);
             $el.html(message);
             $('#modal_messages').modal('show');
-        }
-        if (top !== self) {
-            $('body').addClass('in-iframe');
         }
     </script>
     {% block script %}
