@@ -24,12 +24,12 @@ h3 {
 }
 
 /* Avoid Typekit flash of unstyled text */
-.wf-loading {
+.wf-loading body {
   /* styles to use before Typekit is loaded */
   visibility: hidden;
 }
  
-.wf-active {
+.wf-active body {
   /* styles to use after Typekit is loaded */
   visibility: visible;
 }
